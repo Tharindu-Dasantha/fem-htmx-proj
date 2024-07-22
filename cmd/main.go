@@ -22,6 +22,24 @@ func newTemplate() *Templates {
 	}
 }
 
+type Contact struct {
+	Name string
+	Email string
+}
+
+func newContact(name string, email string) Contact {
+	return Contact{
+		Name: name,
+		Email: email,
+	}
+}
+
+type Contacts = []Contact
+
+type Data struct {
+	Contacts Contacts
+}
+
 type Count struct {
 	Count int
 }
@@ -37,9 +55,8 @@ func main() {
 		return c.Render(200, "index", count)
 	});
 
-	e.POST("/count", func(c echo.Context) error {
-		count.Count++
-		return c.Render(200, "count", count)
+	e.POST("/contacts", func(c echo.Context) error {
+		return c.Render(200, "index", count)
 	});
 	
 	e.Logger.Fatal(e.Start(":42069"))
