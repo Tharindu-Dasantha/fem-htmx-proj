@@ -4,30 +4,55 @@
 	<head>
 		<title>First HTMX Site</title>
 		<script src="https://unpkg.com/htmx.org@2.0.1"></script> </head>
+		<script>
+			document.addEventListener("htmx:afterRequest", (evt) => {
+				if (evt.detail.xhr.status === 422) {
+					evt.detail.shouldSwap = true;
+					evt.detail.isError = false;
+				}
+			});
+})
+		</script>
 	<body>
-		{{ template "form" . }}
+		{{ template "form" .Form }}
 		<hr />
-		{{ template "display" . }}
+		{{ template "display" .Data }}
 	</body>
 </html>
 {{ end }}
 
 {{ block "form" . }}
-<form hx-target="body" hx-post="/contacts">
-	name: <input type="text" name="name" />
-	email: <input type="email" name="email" />
+<form hx-swap="outerHTML" hx-post="/contacts">
+	name: <input
+		{{ if .Values.name }} value="{{ .Values.name }}" {{ end }} 
+	type="text" name="name" />
+	email: <input {{ if .Values.email }} value="{{ .Values.email }}" {{ end }} type="email" name="email" />
+	{{ if .Errors.email }} 
+	<div style="color: red;">{{ .Errors.email }}</div>
+	{{ end }} 
 	<button type="submit">Create Contact</button>
 </form>
 {{ end }}
 
 
 {{ block "display" . }}
-<div style="display: flex; flex-direction: column;"> 
+<div id="contacts" style="display: flex; flex-direction: column;"> 
 	{{ range .Contacts }}
-	<div> 
-		<span>Name: {{ .Name }}</span>
-		<span>Email: {{ .Email }}</span>
-	</div>
+		{{ template "contact" . }}
 	{{ end }}
 </div>
+{{ end }}
+
+{{ block "contact" . }}
+	<div>
+		Name: <span>{{ .Name }}</span>
+		Email: <span>{{ .Email }}</span>
+	</div>
+{{ end }}
+
+
+{{ block "oob-contact" . }}
+	<div id="contacts" hx-swap-oob="afterbegin" >
+		{{ template "contact" . }} 
+	</div>
 {{ end }}
