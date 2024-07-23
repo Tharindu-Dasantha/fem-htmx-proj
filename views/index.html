@@ -13,6 +13,7 @@
 			});
 })
 		</script>
+		<link rel="stylesheet" href="/css/index.css" >
 	<body>
 		{{ template "form" .Form }}
 		<hr />
@@ -44,9 +45,19 @@
 {{ end }}
 
 {{ block "contact" . }}
-	<div>
+<div id="contact-{{ .Id }}" style="display: flex;">
+	<div hx-indicator="#ci-{{ .Id }}" hx-swap="outerHTML" hx-target="#contact-{{ .Id }}" hx-delete="/contacts/{{ .Id }}" style="width: 1rem; cursor: pointer">
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path fill="none" d="M0 0h24v24H0z" />
+    <path d="M4 2h16a1 1 0 011 1v1a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1zm1 4h14v16a1 1 0 01-1 1H5a1 1 0 01-1-1V6zm2 2v12h10V8H7z" />
+</svg>	
+		</div>
 		Name: <span>{{ .Name }}</span>
 		Email: <span>{{ .Email }}</span>
+
+		<div id="ci-{{ .Id }}" class="htmx-indicator">
+		<img src="/images/bars.svg" alt="loading" style="width: 1rem">
+		</div>
 	</div>
 {{ end }}
 
