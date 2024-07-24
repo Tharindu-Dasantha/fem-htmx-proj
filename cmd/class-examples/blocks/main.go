@@ -28,8 +28,7 @@ type Block struct {
     Id int
 }
 
-type Blocks struct {
-    Start int
+ta    Start int
     Next int
     More bool
     Blocks []Block
